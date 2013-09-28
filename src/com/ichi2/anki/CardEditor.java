@@ -86,6 +86,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Allows the user to edit a fact, for instance if there is a typo. A card is a presentation of a fact, and has two
@@ -156,6 +158,7 @@ public class CardEditor extends Activity {
     private Button mSave;
     private Button mCancel;
     private Button mLater;
+    private Button mCloze;
     private TextView mTagsButton;
     private TextView mModelButton;
     private TextView mDeckButton;
@@ -339,6 +342,7 @@ public class CardEditor extends Activity {
         mSave = (Button) findViewById(R.id.CardEditorSaveButton);
         mCancel = (Button) findViewById(R.id.CardEditorCancelButton);
         mLater = (Button) findViewById(R.id.CardEditorLaterButton);
+        mCloze = (Button) findViewById(R.id.CardEditorClozeButton);
         mDeckButton = (TextView) findViewById(R.id.CardEditorDeckText);
         mModelButton = (TextView) findViewById(R.id.CardEditorModelText);
         mTagsButton = (TextView) findViewById(R.id.CardEditorTagText);
@@ -563,6 +567,13 @@ public class CardEditor extends Activity {
                 closeCardEditor();
             }
 
+        });
+
+        mCloze.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addCloze();
+            }
         });
     }
 
@@ -1358,6 +1369,29 @@ public class CardEditor extends Activity {
             mFieldsLayoutContainer.addView(label);
             mFieldsLayoutContainer.addView(frame);
         }
+    }
+
+
+    private void addCloze() {
+        Pattern clozePattern = Pattern.compile("\\{\\{c(\\d+)::.+?\\}\\}");
+        FieldEditText field = mEditFields.getFirst();
+        Editable text = field.getText();
+        int selectionStart = field.getSelectionStart();
+        int selectionEnd = field.getSelectionEnd();
+
+        if (selectionStart == selectionEnd) {
+            return;
+        }
+
+        Matcher matcher = clozePattern.matcher(text.toString());
+        int clozeCount = 1;
+        while (matcher.find()) {
+            clozeCount++;
+        }
+
+        String selection = text.subSequence(selectionStart, selectionEnd).toString();
+        String selectionWithCloze = "{{c" + clozeCount + "::" + selection + "}}";
+        text.replace(selectionStart, selectionEnd, selectionWithCloze);
     }
 
 

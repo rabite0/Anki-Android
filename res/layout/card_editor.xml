@@ -44,6 +44,14 @@
 				android:gravity="center"
 				android:visibility="gone"
 				android:layout_weight="1"/>
+			<Button android:layout_width="0dip"
+				android:layout_height="fill_parent"
+				android:id="@+id/CardEditorClozeButton"
+				style="?android:attr/buttonStyleSmall"
+				android:text="@string/CardEditorClozeButton"
+				android:layout_gravity="center"
+				android:gravity="center"
+				android:layout_weight="1"/>
 		</LinearLayout>
  	    <LinearLayout
   		android:layout_height="wrap_content" 
